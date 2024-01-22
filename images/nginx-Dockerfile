@@ -1,0 +1,9 @@
+from nginx
+
+ENV NGINX_PORT=${NGINX_PORT:-8080}
+ENV NODE_PORT=${NODE_PORT:-8088}
+ENV NODE_HOST=${NODE_HOST:-node-fullcycle}
+
+copy ../nginx-config/* /etc/nginx/templates/
+
+expose $NGINX_PORT

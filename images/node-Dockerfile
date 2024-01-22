@@ -1,0 +1,15 @@
+from node
+
+run mkdir /app
+
+workdir /app
+
+copy ../src .
+
+
+run npm install mysql2 && \
+    npm install express
+
+entrypoint ["node", "main.js"]
+
+expose ${NODE_PORT:-8088}
