@@ -1,47 +1,48 @@
 const express = require('express')
-const mysql = require('mysql2')
+const util = require('util');
+const mysql = require('mysql')
+const { faker } = require('@faker-js/faker');
 const app = express()
 
-var connection = mysql.createConnection({
-  host     : process.env.DATABASE_HOST,
-  user     : process.env.DATABASE_USER,
-  password : process.env.DATABASE_USER_PASSWORD,
-  database : process.env.DATABASE_NAME
-});
-
-
-
-function getPeople(){
-  let people = [];
-  connection.connect(function(err) {
-    if (err) throw err;
-    con.query("SELECT * FROM people", function (err, result, fields) {
-      if (err) throw err;
-      people = result;
-    });
+function generateConnection() {
+  return mysql.createConnection({
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_USER_PASSWORD,
+    database: process.env.DATABASE_NAME
   });
+}
+
+async function generatePeople() {
+  let connection = generateConnection();
+  const query = util.promisify(connection.query).bind(connection);
+  await query("insert into people set ?", { name: faker.person.fullName() });
   connection.end();
-
-  return people;  
-
 }
 
-function generateHtml(){
-  try{
-    let people = getPeople();
-    let html = '<H1>Full Cycle Rocks!</H1>'
-    html += '<br/>'
-    people.forEach(function (person) {
-      html += '${person.id} - ${person.name}<br/>';
-    });
-  }catch(err){
-    return err.toString();
-  } 
+
+async function getPeople() {
+  let connection = generateConnection();
+  const query = util.promisify(connection.query).bind(connection);
+  let people = await query("SELECT * FROM people");
+  connection.end();
+  return people;
 }
 
-app.get('/', function (req, res) {
-  let html = generateHtml();
-  res.send(html)
+function generateHtml(people) {
+  let html = '<H1>Full Cycle Rocks!</H1>';
+  html += '<br/>'
+  people.forEach(function (person) {
+    html += person.id + ' - ' + person.name + '<br/>';
+  });
+  return html;
+}
+
+app.get('/', async function (req, res) {
+  await generatePeople();
+  let people = await getPeople();
+  let html = generateHtml(people);
+  res.send(html);
 })
 
 app.listen(process.env.NODE_PORT)

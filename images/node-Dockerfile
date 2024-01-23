@@ -7,8 +7,9 @@ workdir /app
 copy ../src .
 
 
-run npm install mysql2 && \
-    npm install express
+run npm install mysql && \
+    npm install express && \
+    npm install @faker-js/faker
 
 entrypoint ["node", "main.js"]
 

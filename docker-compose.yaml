@@ -8,39 +8,49 @@ services:
     env_file:
       - .env 
     depends_on: 
-      - db  
+      db:
+       condition: service_healthy      
     networks:
-      - fullcycle  
+      - fullcycle   
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:$NODE_PORT"]
+      interval: 20s
+      timeout: 10s
+      retries: 3     
 
   nginx:
     build:
       context: .
       dockerfile: ./images/nginx-Dockerfile
     ports:
-      - 8082:8082  
+      - 8080:$NGINX_PORT  
     env_file:
-      - .env  
-    depends_on: 
-      - node  
+      - .env       
     networks:
       - fullcycle   
+    depends_on: 
+      node:
+       condition: service_healthy   
 
   db:
-    image: mysql
+    image: mysql:5.7
     restart: always 
     environment:
       - MYSQL_DATABASE=${DATABASE_NAME}  
       - MYSQL_USER=${DATABASE_USER}  
       - MYSQL_PASSWORD=${DATABASE_USER_PASSWORD}  
-      - MYSQL_ROOT_PASSWORD=${DATABASE_USER_PASSWORD}
-    command:
-      #- mysql -e "ALTER USER '${DATABASE_USER}' IDENTIFIED WITH mysql_native_password BY '${DATABASE_USER_PASSWORD}'"  
+      - MYSQL_ROOT_PASSWORD=${DATABASE_USER_PASSWORD}    
     expose:
       - 3306
     env_file:
       - .env
     volumes:  
-      - ./db/:/docker-entrypoint-initdb.d/
+      - ./db/:/docker-entrypoint-initdb.d/  
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD ping -h localhost"]
+      interval: 20s
+      timeout: 10s
+      retries: 3  
     networks:
       - fullcycle
 
