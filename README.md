@@ -1,5 +1,5 @@
 ## full-cycle-docker
-# Desafio Imagem GoLang
+# Desafio NGINX + NODE + MYSQL
 
 - [x] Utilizar o nginx como proxy reverso acessando uma aplicação node;
 - [x] A aplicação por sua vez adicionará um registro em um banco de dados mysql, cadastrando um nome na tabela people.
