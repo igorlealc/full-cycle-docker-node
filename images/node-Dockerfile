@@ -1,16 +1,16 @@
-from node
+FROM node
 
-run mkdir /app
+RUN mkdir /app
 
-workdir /app
+WORKDIR /app
 
-copy ../src .
+COPY ../src .
 
 
-run npm install mysql && \
+RUN npm install mysql && \
     npm install express && \
     npm install @faker-js/faker
 
-entrypoint ["node", "main.js"]
+ENTRYPOINT ["node", "main.js"]
 
-expose ${NODE_PORT:-8088}
+EXPOSE ${NODE_PORT:-8088}
