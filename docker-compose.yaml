@@ -17,6 +17,8 @@ services:
       interval: 20s
       timeout: 10s
       retries: 3     
+    volumes:
+      - ./src/main.js:/app/main.js      
 
   nginx:
     build:
