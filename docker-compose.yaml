@@ -15,7 +15,7 @@ services:
     command:
       - bash
       - -c 
-      - npm install express mysql @faker-js/faker && node main.js  
+      - npm install express mysql2 @faker-js/faker && node main.js  
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:$NODE_PORT"]
       interval: 20s
@@ -39,7 +39,7 @@ services:
        condition: service_healthy   
 
   db:
-    image: mysql:5.7
+    image: mysql
     restart: always 
     environment:
       - MYSQL_DATABASE=${DATABASE_NAME}  

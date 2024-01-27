@@ -1,6 +1,6 @@
 const express = require('express')
 const util = require('util');
-const mysql = require('mysql')
+const mysql = require('mysql2')
 const { faker } = require('@faker-js/faker');
 const app = express()
 
