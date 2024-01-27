@@ -1,6 +1,6 @@
 version: '3'
 
-services:
+services:  
   node:
     build:
       context: .
@@ -12,6 +12,10 @@ services:
        condition: service_healthy      
     networks:
       - fullcycle   
+    command:
+      - bash
+      - -c 
+      - npm install express mysql @faker-js/faker && node main.js  
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:$NODE_PORT"]
       interval: 20s

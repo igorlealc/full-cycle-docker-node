@@ -4,13 +4,4 @@ RUN mkdir /app
 
 WORKDIR /app
 
-COPY ../src .
-
-
-RUN npm install mysql && \
-    npm install express && \
-    npm install @faker-js/faker
-
-ENTRYPOINT ["node", "main.js"]
-
 EXPOSE ${NODE_PORT:-8088}
